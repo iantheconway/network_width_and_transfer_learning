@@ -29,22 +29,33 @@ for i in range(25):
 plt.show()
 
 # Define model for training on the coarse classes
+# Defining total DOF and penultimate layer size:
+n_DOF = 1024
+n_penul = 512
+# Final layer size determined by number of classes:
+n_classes = 20
+
+
 
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+
 
 model.summary()
 
 model.add(layers.Flatten())
-model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(20, activation='softmax'))
+model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
+model.add(layers.Dense(n_penul, activation='relu'))
+model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
 
+#ADAM = tf.keras.optimizers.Adam(learning_rate=0.0129, beta_1=0.9, beta_2=0.999, amsgrad=False)
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
