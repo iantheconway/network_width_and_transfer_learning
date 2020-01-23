@@ -11,6 +11,7 @@ from tensorflow.keras.utils import to_categorical
 n_classes = 3
 learning_rate = 0.0129
 batch_size = 128
+leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
 (train_images_coarse, train_labels_coarse), (test_images_coarse, test_labels_coarse) = datasets.cifar100.load_data(
@@ -48,8 +49,8 @@ for i in range(25):
 plt.show()
 
 # Normalize pixel values to be between 0 and 1
-train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
-train_images, test_images = train_images / 255.0, test_images / 255.0
+# train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
+# train_images, test_images = train_images / 255.0, test_images / 255.0
 
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
@@ -58,18 +59,19 @@ n_penul = 512
 
 
 model = models.Sequential()
-model.add(layers.Conv2D(16, (3, 3), activation='relu', input_shape=train_images[0].shape))
-model.add(layers.Conv2D(16, (3, 3), activation='relu'))
+model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Dropout(0.25))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+# model.add(layers.Dropout(0.25))
+model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Dropout(0.25))
+# model.add(layers.Dropout(0.25))
 model.add(layers.Flatten())
 # model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
-model.add(layers.Dense(n_penul, activation='relu'))
-model.add(layers.Dropout(0.5))
+model.add(layers.Dense(128, activation=leaky_relu))
+model.add(layers.Dense(n_penul, activation=leaky_relu))
+# model.add(layers.Dropout(0.5))
 model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
