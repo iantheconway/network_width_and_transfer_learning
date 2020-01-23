@@ -30,6 +30,12 @@ test_images_coarse, test_labels_coarse = test_images_coarse[test_filter], test_l
 
 class_names = [coarse_label for coarse_label in cifar_100_coarse_classes[:n_classes]]
 
+fine_classes = list(set(test_labels.reshape(-1).tolist()))
+n_fine_class = len(fine_classes)
+
+train_labels = np.array([fine_classes.index(label) for label in train_labels])
+test_labels = np.array([fine_classes.index(label) for label in test_labels])
+
 # Sanity Check: plot examples of each coarse class
 plt.figure(figsize=(10, 10))
 for i in range(25):
@@ -99,7 +105,7 @@ for layer in model.layers[:-1]:
 print("summary before adding new layer")
 
 # Add a trainable final layer
-model_2.add(layers.Dense(100, activation='softmax'))
+model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 
 print("summary after adding new layer")
 model_2.build(input_shape=model.input_shape)
@@ -118,7 +124,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
-test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+test_loss, test_acc, _ = model_2.evaluate(test_images, to_categorical(test_labels), verbose=2)
 
 print(test_acc)
 plt.show()
