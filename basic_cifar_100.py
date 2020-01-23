@@ -46,6 +46,7 @@ for i in range(25):
     plt.imshow(train_images[i], cmap=plt.cm.binary)
     plt.xlabel(class_names[train_labels_coarse[i][0]])
 plt.show()
+
 # Normalize pixel values to be between 0 and 1
 train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
 train_images, test_images = train_images / 255.0, test_images / 255.0
@@ -57,12 +58,12 @@ n_penul = 512
 
 
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=train_images[0].shape))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+model.add(layers.Conv2D(16, (3, 3), activation='relu', input_shape=train_images[0].shape))
+model.add(layers.Conv2D(16, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
 model.add(layers.Flatten())
@@ -84,7 +85,8 @@ model.compile(
 
 history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
                     validation_data=(test_images_coarse, test_labels_coarse),
-                    batch_size=batch_size)
+                    batch_size=batch_size,
+                    shuffle=True)
 
 print("training on fine classes")
 
@@ -116,6 +118,7 @@ model_2.compile(optimizer='adam',
 
 history = model_2.fit(train_images, to_categorical(train_labels), epochs=100
                       ,
+                      shuffle=True,
                       validation_data=(test_images, to_categorical(test_labels)))
 
 plt.plot(history.history['accuracy'], label='accuracy')
