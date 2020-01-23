@@ -60,7 +60,7 @@ model.compile(
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy'])
 
-history = model.fit(train_images_coarse, train_labels_coarse, epochs=10,
+history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
                     validation_data=(test_images_coarse, test_labels_coarse),
                     batch_size=batch_size)
 
@@ -92,7 +92,8 @@ model_2.compile(optimizer='adam',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
 
-history = model_2.fit(train_images, to_categorical(train_labels), epochs=10,
+history = model_2.fit(train_images, to_categorical(train_labels), epochs=100
+                      ,
                       validation_data=(test_images, to_categorical(test_labels)))
 
 plt.plot(history.history['accuracy'], label='accuracy')
