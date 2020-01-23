@@ -1,17 +1,17 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-
-import tensorflow as tf
-
-from tensorflow.keras import datasets, layers, models
+import numpy as np
 import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+from class_names import cifar_100_classes
 
-(train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
+
+(train_images_coarse, train_labels_coarse), (test_images_coarse, test_labels_coarse) = datasets.cifar100.load_data(label_mode='coarse')
 
 # Normalize pixel values to be between 0 and 1
-train_images, test_images = train_images / 255.0, test_images / 255.0
+train_images, test_images = train_images_coarse / 255.0, test_images_coarse / 255.0
 
-class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
-               'dog', 'frog', 'horse', 'ship', 'truck']
+class_names = [coarse_label for coarse_label in cifar_100_classes]
 
 plt.figure(figsize=(10, 10))
 for i in range(25):
@@ -22,7 +22,7 @@ for i in range(25):
     plt.imshow(train_images[i], cmap=plt.cm.binary)
     # The CIFAR labels happen to be arrays,
     # which is why you need the extra index
-    plt.xlabel(class_names[train_labels[i][0]])
+    plt.xlabel(class_names[train_labels_coarse[i][0]])
 plt.show()
 
 model = models.Sequential()
@@ -36,7 +36,7 @@ model.summary()
 
 model.add(layers.Flatten())
 model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(10, activation='softmax'))
+model.add(layers.Dense(20, activation='softmax'))
 
 model.summary()
 
@@ -44,8 +44,8 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_images, train_labels, epochs=10,
-                    validation_data=(test_images, test_labels))
+history = model.fit(train_images_coarse, train_labels_coarse, epochs=10,
+                    validation_data=(test_images_coarse, test_labels_coarse))
 
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
@@ -54,6 +54,6 @@ plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
 
-test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
+test_loss, test_acc = model.evaluate(test_images_coarse,  test_labels_coarse, verbose=2)
 
 print(test_acc)
