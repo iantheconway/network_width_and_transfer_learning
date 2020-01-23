@@ -43,9 +43,11 @@ model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=train_images[0].shape))
 model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+model.add(layers.Dropout(0.25))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Dropout(0.25))
 model.add(layers.Flatten())
 # model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
 model.add(layers.Dense(n_penul, activation='relu'))
@@ -56,7 +58,7 @@ model.summary()
 sgd = tf.keras.optimizers.SGD(learning_rate=learning_rate, clipnorm=1., momentum=.9)
 
 model.compile(
-    # optimizer=sgd,
+    optimizer=sgd,
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy'])
 
