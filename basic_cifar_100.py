@@ -11,7 +11,11 @@ from tensorflow.keras.utils import to_categorical
     label_mode='coarse')
 
 # Normalize pixel values to be between 0 and 1
-train_images, test_images = train_images_coarse / 255.0, test_images_coarse / 255.0
+# train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
+# train_images, test_images = train_images / 255.0, test_images / 255.0
+
+learning_rate = 0.0129
+batch_size = 128
 
 class_names = [coarse_label for coarse_label in cifar_100_classes]
 
@@ -35,33 +39,30 @@ n_penul = 512
 # Final layer size determined by number of classes:
 n_classes = 20
 
-
-
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=train_images[0].shape))
 model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-
-
-model.summary()
-
 model.add(layers.Flatten())
-model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
+# model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
 model.add(layers.Dense(n_penul, activation='relu'))
 model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
 
-#ADAM = tf.keras.optimizers.Adam(learning_rate=0.0129, beta_1=0.9, beta_2=0.999, amsgrad=False)
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+sgd = tf.keras.optimizers.SGD(learning_rate=learning_rate, clipnorm=1., momentum=.9)
+
+model.compile(
+    # optimizer=sgd,
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy'])
 
 history = model.fit(train_images_coarse, train_labels_coarse, epochs=10,
-                    validation_data=(test_images_coarse, test_labels_coarse))
+                    validation_data=(test_images_coarse, test_labels_coarse),
+                    batch_size=batch_size)
 
 print("training on fine classes")
 
@@ -100,7 +101,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
-test_loss, test_acc = model.evaluate(test_images_coarse, test_labels_coarse, verbose=2)
+test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
 print(test_acc)
 plt.show()
