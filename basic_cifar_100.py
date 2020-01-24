@@ -123,14 +123,14 @@ model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 print("summary after adding new layer")
 model_2.build(input_shape=model.input_shape)
 model_2.summary()
-model_2.compile(optimizer='adam',
-                loss='categorical_crossentropy',
+model_2.compile(optimizer=adam,
+                loss='sparse_categorical_crossentropy',
                 metrics=['accuracy'])
 
-history = model_2.fit(train_images, to_categorical(train_labels), epochs=100
+history = model_2.fit(train_images, train_labels, epochs=100
                       ,
                       shuffle=True,
-                      validation_data=(test_images, to_categorical(test_labels)))
+                      validation_data=(test_images, test_labels))
 
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['val_accuracy'], label='val_accuracy')
@@ -138,7 +138,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
-test_loss, test_acc = model_2.evaluate(test_images, to_categorical(test_labels), verbose=2)
+test_loss, test_acc = model_2.evaluate(test_images, test_labels, verbose=2)
 
 print(test_acc)
 plt.show()
