@@ -74,11 +74,13 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
 model.add(layers.BatchNormalization())
 model.add(layers.Flatten())
-# model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
+# Dense Layers
 model.add(layers.Dense(1024, activation=leaky_relu))
+model.add(layers.BatchNormalization())
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(n_penul, activation=leaky_relu))
-
+model.add(layers.BatchNormalization())
+model.add(layers.Dropout(0.5))
 model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
