@@ -70,8 +70,9 @@ model.add(layers.Dropout(0.25))
 model.add(layers.Flatten())
 # model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
 model.add(layers.Dense(128, activation=leaky_relu))
-model.add(layers.Dense(n_penul, activation=leaky_relu))
 model.add(layers.Dropout(0.5))
+model.add(layers.Dense(n_penul, activation=leaky_relu))
+
 model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
