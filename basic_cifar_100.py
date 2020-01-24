@@ -56,16 +56,16 @@ train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_imag
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
-model.add(layers.Conv2D(256, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(512, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
 model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(256, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(512, (3, 3), activation=leaky_relu))
 model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
 
-model.add(layers.Conv2D(256, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(512, (3, 3), activation=leaky_relu))
 model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(256, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(512, (3, 3), activation=leaky_relu))
 model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
