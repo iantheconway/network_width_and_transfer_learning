@@ -109,12 +109,13 @@ model.summary()
 # Create a new model for training on the fine classes
 model_2 = models.Sequential()
 
-for layer in model.layers[:-1]:
+for layer in model.layers[:-2]:
     model_2.add(layer)
 
 print("summary before adding new layer")
 
 # Add a trainable final layer
+model.add(layers.Dense(n_penul, activation=leaky_relu))
 model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 
 print("summary after adding new layer")
