@@ -9,7 +9,7 @@ from tensorflow.keras.utils import to_categorical
 
 # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
 n_classes = 3
-learning_rate = 0.02
+learning_rate = 0.025
 batch_size = 128
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
@@ -59,11 +59,11 @@ n_penul = 1024
 
 
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
-model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
-model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
 model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
@@ -83,7 +83,7 @@ model.compile(
     # optimizer=sgd,
     optimizer=adam,
     loss='sparse_categorical_crossentropy',
-    metrics=['accuracy', 'categorical_accuracy'])
+    metrics=['accuracy'])
 
 history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
                     validation_data=(test_images_coarse, test_labels_coarse),
@@ -116,7 +116,7 @@ model_2.build(input_shape=model.input_shape)
 model_2.summary()
 model_2.compile(optimizer='adam',
                 loss='categorical_crossentropy',
-                metrics=['accuracy', 'categorical_accuracy'])
+                metrics=['accuracy'])
 
 history = model_2.fit(train_images, to_categorical(train_labels), epochs=100
                       ,
