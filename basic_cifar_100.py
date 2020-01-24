@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
-from tensorflow.keras.utils import to_categorical
 
 
 # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
@@ -103,8 +102,8 @@ print("training on fine classes")
 
 # freeze layers from coarse class model
 
-for layer in model.layers:
-    layer.trainable = False
+# for layer in model.layers:
+#     layer.trainable = False
 
 print("summary before removing layer")
 model.summary()
