@@ -14,7 +14,7 @@ batch_size = 128
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
 n_DOF = 1024
-n_penul = 128
+n_penul = 1024
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -48,6 +48,7 @@ for i in range(25):
     plt.xticks([])
     plt.yticks([])
     plt.grid(False)
+    assert np.all(train_images[i] == train_images_coarse[i])
     plt.imshow(train_images[i], cmap=plt.cm.binary)
     plt.xlabel(class_names[train_labels_coarse[i][0]])
 plt.show()
@@ -59,13 +60,18 @@ train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
 model.add(layers.Conv2D(128, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.BatchNormalization())
 model.add(layers.Conv2D(128, (3, 3), activation=leaky_relu))
+model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
+model.add(layers.BatchNormalization())
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
+model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
+model.add(layers.BatchNormalization())
 model.add(layers.Flatten())
 # model.add(layers.Dense(np.floor_divide(n_DOF, n_penul), activation='relu'))
 model.add(layers.Dense(128, activation=leaky_relu))
@@ -129,7 +135,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
-test_loss, test_acc, _ = model_2.evaluate(test_images, to_categorical(test_labels), verbose=2)
+test_loss, test_acc = model_2.evaluate(test_images, to_categorical(test_labels), verbose=2)
 
 print(test_acc)
 plt.show()
