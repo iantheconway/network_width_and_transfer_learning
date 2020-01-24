@@ -11,6 +11,10 @@ from tensorflow.keras.utils import to_categorical
 n_classes = 3
 learning_rate = 0.0129
 batch_size = 128
+# Define model for training on the coarse classes
+# Defining total DOF and penultimate layer size:
+n_DOF = 1024
+n_penul = 128
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -51,11 +55,6 @@ plt.show()
 # Normalize pixel values to be between 0 and 1
 train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
 train_images, test_images = train_images / 255.0, test_images / 255.0
-
-# Define model for training on the coarse classes
-# Defining total DOF and penultimate layer size:
-n_DOF = 1024
-n_penul = 1024
 
 
 model = models.Sequential()
