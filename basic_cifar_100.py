@@ -127,8 +127,9 @@ model_2.compile(
     metrics=['accuracy']
 )
 
-history = model_2.fit(train_images, train_labels, epochs=100
-                      ,
+history = model_2.fit(train_images, train_labels,
+                      epochs=100,
+                      batch_size=batch_size,
                       shuffle=True,
                       validation_data=(test_images, test_labels))
 
