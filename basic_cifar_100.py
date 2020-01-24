@@ -49,8 +49,8 @@ for i in range(25):
 plt.show()
 
 # Normalize pixel values to be between 0 and 1
-# train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
-# train_images, test_images = train_images / 255.0, test_images / 255.0
+train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
+train_images, test_images = train_images / 255.0, test_images / 255.0
 
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
