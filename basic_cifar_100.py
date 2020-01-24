@@ -100,8 +100,8 @@ print("training on fine classes")
 
 # freeze layers from coarse class model
 
-# for layer in model.layers:
-#     layer.trainable = False
+for layer in model.layers:
+    layer.trainable = False
 
 print("summary before removing layer")
 model.summary()
