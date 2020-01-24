@@ -5,7 +5,6 @@ import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
 
-
 # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
 n_classes = 3
 learning_rate = 0.0129
@@ -56,7 +55,6 @@ plt.show()
 train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
-
 model = models.Sequential()
 model.add(layers.Conv2D(256, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
 model.add(layers.BatchNormalization())
@@ -88,8 +86,8 @@ sgd = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=.9)
 adam = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
 model.compile(
-    # optimizer=sgd,
-    optimizer=adam,
+    optimizer=sgd,
+    # optimizer=adam,
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy'])
 
@@ -122,9 +120,12 @@ model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 print("summary after adding new layer")
 model_2.build(input_shape=model.input_shape)
 model_2.summary()
-model_2.compile(optimizer=adam,
-                loss='sparse_categorical_crossentropy',
-                metrics=['accuracy'])
+model_2.compile(
+    # optimizer=adam,
+    optimizer=sgd,
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
 
 history = model_2.fit(train_images, train_labels, epochs=100
                       ,
