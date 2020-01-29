@@ -1,9 +1,21 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
+
+
+parser = argparse.ArgumentParser(description='Copare network architecture for transfer learning')
+parser.add_argument('-n', metavar='n', type=int, nargs='+', default=1024,
+                    help='number of nodes for final hidden layer')
+
+parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=True,
+                    help='weather to randomly initialize or use transfer learning')
+
+args = parser.parse_args()
+
 
 # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
 n_classes = 3
@@ -12,7 +24,7 @@ batch_size = 128
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
 n_DOF = 1024
-n_penul = 1024
+n_penul = args.n
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -91,7 +103,8 @@ model.compile(
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy'])
 
-history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
+if args.t:
+    history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
                     validation_data=(test_images_coarse, test_labels_coarse),
                     batch_size=batch_size,
                     shuffle=True)
