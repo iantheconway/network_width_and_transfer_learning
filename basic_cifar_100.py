@@ -7,8 +7,8 @@ from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
 
 
-parser = argparse.ArgumentParser(description='Copare network architecture for transfer learning')
-parser.add_argument('-n', metavar='n', type=int, nargs='+', default=1024,
+parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
+parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
 parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=False,
@@ -24,7 +24,7 @@ batch_size = 128
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
 n_DOF = 1024
-n_penul = args.n
+n_penul = args.n[0]
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -122,13 +122,13 @@ model.summary()
 # Create a new model for training on the fine classes
 model_2 = models.Sequential()
 
-for layer in model.layers[:-2]:
+for layer in model.layers[:-1]:
     model_2.add(layer)
 
 print("summary before adding new layer")
 
 # Add a trainable final layer
-model.add(layers.Dense(n_penul, activation=leaky_relu))
+# model.add(layers.Dense(n_penul, activation=leaky_relu))
 model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 
 print("summary after adding new layer")
@@ -142,7 +142,7 @@ model_2.compile(
 )
 
 history = model_2.fit(train_images, train_labels,
-                      epochs=100,
+                      epochs=1,
                       batch_size=batch_size,
                       shuffle=True,
                       validation_data=(test_images, test_labels))
