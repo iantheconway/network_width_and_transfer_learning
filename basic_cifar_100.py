@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(description='Copare network architecture for tr
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=1024,
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=True,
+parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=False,
                     help='weather to randomly initialize or use transfer learning')
 
 args = parser.parse_args()
