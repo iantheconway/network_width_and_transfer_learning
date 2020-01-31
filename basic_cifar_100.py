@@ -35,6 +35,7 @@ n_penul = args.n[0]
 use_batch = args.b
 use_dropout = args.d
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
+relu = tf.keras.activations.relu
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
 (train_images_coarse, train_labels_coarse), (test_images_coarse, test_labels_coarse) = datasets.cifar100.load_data(
@@ -73,24 +74,24 @@ for i in range(25):
 plt.show()
 
 # Normalize pixel values to be between 0 and 1
-train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
-train_images, test_images = train_images / 255.0, test_images / 255.0
+# train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
+# train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
-model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(64, (3, 3), activation=relu, input_shape=train_images[0].shape))
 if use_batch:
     model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu))
 if use_batch:
     model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 if use_dropout:
     model.add(layers.Dropout(0.25))
 
-model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu))
 if use_batch:
     model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu))
 if use_batch:
     model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
@@ -105,7 +106,7 @@ if use_batch:
     model.add(layers.BatchNormalization())
 if use_dropout:
     model.add(layers.Dropout(0.25))
-model.add(layers.Dense(n_penul, activation=leaky_relu))
+model.add(layers.Dense(n_penul, activation=relu))
 if use_batch:
     model.add(layers.BatchNormalization())
 if use_dropout:
