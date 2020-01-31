@@ -32,8 +32,8 @@ batch_size = 128
 # Defining total DOF and penultimate layer size:
 n_DOF = 1024
 n_penul = args.n[0]
-use_batch = args.b[0]
-use_dropout = args.d[0]
+use_batch = args.b
+use_dropout = args.d
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
