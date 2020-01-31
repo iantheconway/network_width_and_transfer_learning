@@ -100,7 +100,7 @@ if use_batch:
     model.add(layers.BatchNormalization())
 model.add(layers.Flatten())
 # Dense Layers
-model.add(layers.Dense(1024, activation=leaky_relu))
+# model.add(layers.Dense(1024, activation=leaky_relu))
 if use_batch:
     model.add(layers.BatchNormalization())
 if use_dropout:
