@@ -14,6 +14,12 @@ parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
 parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=False,
                     help='weather to randomly initialize or use transfer learning')
 
+parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
+                    help='weather to use batch normalization')
+
+parser.add_argument('-d', metavar='d', type=bool, nargs='+', default=False,
+                    help='weather to use dropout')
+
 args = parser.parse_args()
 
 
@@ -26,6 +32,8 @@ batch_size = 128
 # Defining total DOF and penultimate layer size:
 n_DOF = 1024
 n_penul = args.n[0]
+use_batch = args.b[0]
+use_dropout = args.d[0]
 leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -70,27 +78,38 @@ train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
-model.add(layers.BatchNormalization())
+if use_batch:
+    model.add(layers.BatchNormalization())
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
-model.add(layers.BatchNormalization())
+if use_batch:
+    model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Dropout(0.25))
+if use_dropout:
+    model.add(layers.Dropout(0.25))
 
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
-model.add(layers.BatchNormalization())
+if use_batch:
+    model.add(layers.BatchNormalization())
 model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
-model.add(layers.BatchNormalization())
+if use_batch:
+    model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Dropout(0.25))
-model.add(layers.BatchNormalization())
+if use_dropout:
+    model.add(layers.Dropout(0.25))
+if use_batch:
+    model.add(layers.BatchNormalization())
 model.add(layers.Flatten())
 # Dense Layers
 model.add(layers.Dense(1024, activation=leaky_relu))
-model.add(layers.BatchNormalization())
-model.add(layers.Dropout(0.5))
+if use_batch:
+    model.add(layers.BatchNormalization())
+if use_dropout:
+    model.add(layers.Dropout(0.25))
 model.add(layers.Dense(n_penul, activation=leaky_relu))
-model.add(layers.BatchNormalization())
-model.add(layers.Dropout(0.5))
+if use_batch:
+    model.add(layers.BatchNormalization())
+if use_dropout:
+    model.add(layers.Dropout(0.25))
 model.add(layers.Dense(n_classes, activation='softmax'))
 
 model.summary()
