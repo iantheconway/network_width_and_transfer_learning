@@ -20,6 +20,7 @@ args = parser.parse_args()
 # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
 n_classes = 3
 learning_rate = 0.0129
+learning_rate_fine = 0.001
 batch_size = 128
 # Define model for training on the coarse classes
 # Defining total DOF and penultimate layer size:
@@ -68,9 +69,9 @@ train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_imag
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu, input_shape=train_images[0].shape))
 model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(32, (3, 3), activation=leaky_relu))
+model.add(layers.Conv2D(64, (3, 3), activation=leaky_relu))
 model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Dropout(0.25))
@@ -132,11 +133,12 @@ print("summary before adding new layer")
 model_2.add(layers.Dense(n_fine_class, activation='softmax'))
 
 print("summary after adding new layer")
+sgd_2 = tf.keras.optimizers.SGD(learning_rate=learning_rate_fine, momentum=.9)
 model_2.build(input_shape=model.input_shape)
 model_2.summary()
 model_2.compile(
     # optimizer=adam,
-    optimizer=sgd,
+    optimizer=sgd_2,
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']
 )
