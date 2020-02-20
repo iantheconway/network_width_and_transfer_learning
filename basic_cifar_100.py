@@ -175,7 +175,7 @@ model_2.compile(
 history = model_2.fit(datagen.flow(train_images, train_labels, batch_size=batch_size),
                       epochs=100,
                       shuffle=True,
-                      validation_data=datagen.flow(test_images, test_labels))
+                      validation_data=(test_images, test_labels))
 
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['val_accuracy'], label='val_accuracy')
