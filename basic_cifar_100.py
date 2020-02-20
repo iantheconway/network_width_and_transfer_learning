@@ -87,20 +87,20 @@ train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_imag
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
-model.add(layers.Conv2D(64, (3, 3), activation=relu, input_shape=train_images[0].shape))
+model.add(layers.Conv2D(64, (3, 3), activation=relu, input_shape=train_images[0].shape, padding='same'))
 if use_batch:
     model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(64, (3, 3), activation=relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu, padding='same'))
 if use_batch:
     model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
 if use_dropout:
     model.add(layers.Dropout(0.25))
 
-model.add(layers.Conv2D(64, (3, 3), activation=relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu, padding='same'))
 if use_batch:
     model.add(layers.BatchNormalization())
-model.add(layers.Conv2D(64, (3, 3), activation=relu))
+model.add(layers.Conv2D(64, (3, 3), activation=relu, padding='same'))
 if use_batch:
     model.add(layers.BatchNormalization())
 model.add(layers.MaxPooling2D((2, 2)))
@@ -136,7 +136,6 @@ model.compile(
 if args.t:
     history = model.fit(datagen.flow(train_images_coarse, train_labels_coarse, batch_size=batch_size),
                                   epochs=100,
-                                  steps_per_epoch=len(train_images_coarse) / batch_size,
                                   validation_data=datagen.flow(test_images_coarse, test_labels_coarse),
                                   shuffle=True)
 
@@ -175,7 +174,6 @@ model_2.compile(
 
 history = model_2.fit(datagen.flow(train_images, train_labels, batch_size=batch_size),
                       epochs=100,
-                      steps_per_epoch=len(train_images) / batch_size,
                       shuffle=True,
                       validation_data=datagen.flow(test_images, test_labels))
 
