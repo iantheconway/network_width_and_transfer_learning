@@ -172,7 +172,8 @@ model_2.compile(
     metrics=['accuracy']
 )
 
-history = model_2.fit(datagen.flow(train_images, train_labels, batch_size=batch_size),
+history = model_2.fit(train_images, train_labels,
+                      batch_size=batch_size,
                       epochs=100,
                       shuffle=True,
                       validation_data=(test_images, test_labels))
