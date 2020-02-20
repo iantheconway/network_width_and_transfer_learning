@@ -137,7 +137,7 @@ if args.t:
     history = model.fit(datagen.flow(train_images_coarse, train_labels_coarse, batch_size=batch_size),
                                   epochs=100,
                                   steps_per_epoch=len(train_images_coarse) / batch_size,
-                                  validation_data=(test_images_coarse, test_labels_coarse),
+                                  validation_data=datagen.flow(test_images_coarse, test_labels_coarse),
                                   shuffle=True)
 
 print("training on fine classes")
@@ -177,7 +177,7 @@ history = model_2.fit(datagen.flow(train_images, train_labels, batch_size=batch_
                       epochs=100,
                       steps_per_epoch=len(train_images) / batch_size,
                       shuffle=True,
-                      validation_data=(test_images, test_labels))
+                      validation_data=datagen.flow(test_images, test_labels))
 
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['val_accuracy'], label='val_accuracy')
