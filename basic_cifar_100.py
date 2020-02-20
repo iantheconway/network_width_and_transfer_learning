@@ -3,9 +3,16 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
 
+datagen = ImageDataGenerator(
+        rotation_range=15,
+        width_shift_range=0.1,
+        height_shift_range=0.1,
+        horizontal_flip=True,
+        fill_mode='nearest')
 
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
@@ -40,6 +47,8 @@ relu = tf.keras.activations.relu
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
 (train_images_coarse, train_labels_coarse), (test_images_coarse, test_labels_coarse) = datasets.cifar100.load_data(
     label_mode='coarse')
+
+datagen.fit(train_images_coarse)
 
 # Filter based on class labels
 
@@ -125,10 +134,11 @@ model.compile(
     metrics=['accuracy'])
 
 if args.t:
-    history = model.fit(train_images_coarse, train_labels_coarse, epochs=100,
-                    validation_data=(test_images_coarse, test_labels_coarse),
-                    batch_size=batch_size,
-                    shuffle=True)
+    history = model.fit(datagen.flow(train_images_coarse, train_labels_coarse, batch_size=batch_size),
+                                  epochs=100,
+                                  steps_per_epoch=len(train_images_coarse) / batch_size,
+                                  validation_data=(test_images_coarse, test_labels_coarse),
+                                  shuffle=True)
 
 print("training on fine classes")
 
@@ -163,9 +173,9 @@ model_2.compile(
     metrics=['accuracy']
 )
 
-history = model_2.fit(train_images, train_labels,
+history = model_2.fit(datagen.flow(train_images, train_labels, batch_size=batch_size),
                       epochs=100,
-                      batch_size=batch_size,
+                      steps_per_epoch=len(train_images) / batch_size,
                       shuffle=True,
                       validation_data=(test_images, test_labels))
 
