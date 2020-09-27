@@ -9,9 +9,14 @@ from class_names import cifar_100_coarse_classes
 import wandb
 from wandb.keras import WandbCallback
 
+
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
+
+parser.add_argument('-e', action='store_const', const=100,
+                    help='number of epochs to train for'
+                    )
 
 parser.add_argument('-t', action='store_true',
                     help='weather to randomly initialize or use transfer learning')
@@ -29,6 +34,7 @@ def run_transfer_learning(transfer=True,
                           batch_size=128,
                           learning_rate=0.0129,
                           learning_rate_fine=0.001,
+                          epochs=100,
                           dropout=False):
     """trains a model on a subset of the cifar 100 classes,
     freezes parameters and then does transfer learning on the remaining classes"""
@@ -150,13 +156,14 @@ def run_transfer_learning(transfer=True,
         model.fit(datagen.flow(train_images_coarse,
                                train_labels_coarse,
                                batch_size=batch_size),
-                  epochs=100,
+                  epochs=epochs,
                   validation_data=datagen.flow(test_images_coarse,
                                                test_labels_coarse),
                   shuffle=True,
                   callbacks=[WandbCallback(data_type='image',
                                            validation_data=(test_images_coarse,
-                                                            test_labels_coarse)
+                                                            test_labels_coarse),
+                                           labels=class_names
                                            )
                              ]
 
@@ -199,7 +206,7 @@ def run_transfer_learning(transfer=True,
         train_images,
         train_labels,
         batch_size=batch_size,
-        epochs=100,
+        epochs=epochs,
         shuffle=True,
         validation_data=(test_images, test_labels),
         callbacks=[WandbCallback(
@@ -230,4 +237,6 @@ if __name__ == "__main__":
     run_transfer_learning(
         transfer=args.t,
         batch_norm=args.b,
-        dropout=args.d)
+        dropout=args.d,
+        epochs=args.e
+    )
