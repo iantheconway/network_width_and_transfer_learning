@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description='Compare network architecture for t
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-e', action='store_const', const=100,
+parser.add_argument('-e', nargs='?', const=100, type=int, default=100,
                     help='number of epochs to train for'
                     )
 
