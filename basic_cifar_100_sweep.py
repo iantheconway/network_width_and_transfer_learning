@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
-from class_names import cifar_100_coarse_classes›
-
+from class_names import cifar_100_coarse_classes
 
 
 
