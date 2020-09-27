@@ -8,11 +8,13 @@ from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
 import wandb
 
+
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-t', metavar='n', type=bool, nargs='+', default=False,
+parser.add_argument('-t', metavar='n', type=bool, action='store_true',
+                    nargs='+', default=False,
                     help='weather to randomly initialize or use transfer learning')
 
 parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
@@ -204,6 +206,6 @@ if __name__ == "__main__":
     print(args.t)
     print("x" * 42)
     run_transfer_learning(args,
-                          transfer=args.t,
+                          transfer=args.t[0],
                           batch_norm=args.b,
                           dropout=args.d)
