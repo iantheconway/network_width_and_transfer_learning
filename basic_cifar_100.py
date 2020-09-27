@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='Compare network architecture for t
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-t', metavar='n', type=bool, action='store_true',
+parser.add_argument('-t',  type=bool, action='store_true',
                     nargs='+', default=False,
                     help='weather to randomly initialize or use transfer learning')
 
