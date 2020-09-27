@@ -205,6 +205,6 @@ if __name__ == "__main__":
     print(args.t)
     print("x" * 42)
     run_transfer_learning(args,
-                          transfer=args.t[0],
+                          transfer=args.t,
                           batch_norm=args.b,
                           dropout=args.d)
