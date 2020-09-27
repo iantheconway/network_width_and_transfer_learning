@@ -147,16 +147,20 @@ def run_transfer_learning(transfer=True,
         metrics=['accuracy'])
 
     if transfer:
-        history = model.fit(datagen.flow(train_images_coarse,
-                                         train_labels_coarse,
-                                         batch_size=batch_size),
-                            epochs=100,
-                            validation_data=datagen.flow(test_images_coarse,
-                                                         test_labels_coarse),
-                            shuffle=True,
-                            callbacks=[WandbCallback()]
+        model.fit(datagen.flow(train_images_coarse,
+                               train_labels_coarse,
+                               batch_size=batch_size),
+                  epochs=100,
+                  validation_data=datagen.flow(test_images_coarse,
+                                               test_labels_coarse),
+                  shuffle=True,
+                  callbacks=[WandbCallback(data_type='image',
+                                           validation_data=(test_images_coarse,
+                                                            test_labels_coarse)
+                                           )
+                             ]
 
-                            )
+                  )
 
     print("training on fine classes")
 
@@ -191,13 +195,20 @@ def run_transfer_learning(transfer=True,
         metrics=['accuracy']
     )
 
-    history = model_2.fit(train_images, train_labels,
-                          batch_size=batch_size,
-                          epochs=100,
-                          shuffle=True,
-                          validation_data=(test_images, test_labels),
-                          callbacks=[WandbCallback()]
-                          )
+    history = model_2.fit(
+        train_images,
+        train_labels,
+        batch_size=batch_size,
+        epochs=100,
+        shuffle=True,
+        validation_data=(test_images, test_labels),
+        callbacks=[WandbCallback(
+            data_type='image',
+            validation_data=(test_images,
+                             test_labels)
+            )
+        ]
+    )
 
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label='val_accuracy')
