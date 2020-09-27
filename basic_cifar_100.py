@@ -202,9 +202,7 @@ def run_transfer_learning(transfer=True,
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    print(args.t)
-    print("x" * 42)
-    run_transfer_learning(args,
+    run_transfer_learning(
                           transfer=args.t,
                           batch_norm=args.b,
                           dropout=args.d)
