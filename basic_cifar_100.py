@@ -7,13 +7,13 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_im
 from tensorflow.keras import datasets, layers, models
 from class_names import cifar_100_coarse_classes
 import wandb
-
+from wandb.keras import WandbCallback
 
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
 parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-t',  action='store_true',
+parser.add_argument('-t', action='store_true',
                     help='weather to randomly initialize or use transfer learning')
 
 parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
@@ -22,11 +22,13 @@ parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
 parser.add_argument('-d', metavar='d', type=bool, nargs='+', default=False,
                     help='weather to use dropout')
 
-wandb.init(project="network_width_and_transfer_learning")
-
 
 def run_transfer_learning(transfer=True,
+                          penultimate_layer_dim=1024,
                           batch_norm=False,
+                          batch_size=128,
+                          learning_rate=0.0129,
+                          learning_rate_fine=0.001,
                           dropout=False):
     """trains a model on a subset of the cifar 100 classes,
     freezes parameters and then does transfer learning on the remaining classes"""
@@ -38,17 +40,22 @@ def run_transfer_learning(transfer=True,
         horizontal_flip=True,
         fill_mode='nearest')
 
+    config = {'transfer': transfer,
+              'penultimate_layer_dim': penultimate_layer_dim,
+              'batch_norm': batch_norm,
+              'batch_size': batch_size,
+              'learning_rate': learning_rate,
+              'learning_rate_fine': learning_rate_fine,
+              'dropout': dropout}
+
+    wandb.init(project="network_width_and_transfer_learning",
+               sync_tensorboard=True,
+               config=config
+               )
+
     # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
     n_classes = 3
-    learning_rate = 0.0129
-    learning_rate_fine = 0.001
-    batch_size = 128
-    # Define model for training on the coarse classes
-    # Defining total DOF and penultimate layer size:
-    n_DOF = 1024
-    n_penul = args.n[0]
 
-    leaky_relu = tf.keras.layers.LeakyReLU(alpha=0.3)
     relu = tf.keras.activations.relu
 
     (train_images, train_labels), (test_images, test_labels) = datasets.cifar100.load_data()
@@ -86,7 +93,7 @@ def run_transfer_learning(transfer=True,
         assert np.all(train_images[i] == train_images_coarse[i])
         plt.imshow(train_images[i], cmap=plt.cm.binary)
         plt.xlabel(class_names[train_labels_coarse[i][0]])
-    plt.show()
+    wandb.log({"coarse_class_examples": plt})
 
     # Normalize pixel values to be between 0 and 1
     train_images_coarse, test_images_coarse = train_images_coarse / 255.0, test_images_coarse / 255.0
@@ -121,7 +128,7 @@ def run_transfer_learning(transfer=True,
         model.add(layers.BatchNormalization())
     if dropout:
         model.add(layers.Dropout(0.25))
-    model.add(layers.Dense(n_penul, activation=relu))
+    model.add(layers.Dense(penultimate_layer_dim, activation=relu))
     if batch_norm:
         model.add(layers.BatchNormalization())
     if dropout:
@@ -146,7 +153,10 @@ def run_transfer_learning(transfer=True,
                             epochs=100,
                             validation_data=datagen.flow(test_images_coarse,
                                                          test_labels_coarse),
-                            shuffle=True)
+                            shuffle=True,
+                            callbacks=[WandbCallback()]
+
+                            )
 
     print("training on fine classes")
 
@@ -185,7 +195,9 @@ def run_transfer_learning(transfer=True,
                           batch_size=batch_size,
                           epochs=100,
                           shuffle=True,
-                          validation_data=(test_images, test_labels))
+                          validation_data=(test_images, test_labels),
+                          callbacks=[WandbCallback()]
+                          )
 
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label='val_accuracy')
@@ -197,12 +209,14 @@ def run_transfer_learning(transfer=True,
 
     print(test_acc)
     wandb.log({"novel_task_test_accuracy": test_acc})
+    wandb.log({"training_accuracy_plot": plt})
     plt.show()
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
+
     run_transfer_learning(
-                          transfer=args.t,
-                          batch_norm=args.b,
-                          dropout=args.d)
+        transfer=args.t,
+        batch_norm=args.b,
+        dropout=args.d)
