@@ -11,14 +11,15 @@ from wandb.keras import WandbCallback
 
 
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
-parser.add_argument('-n', metavar='n', type=int, nargs='+', default=[1024],
+parser.add_argument('-n', '--penultimate_layer_dim',
+                    metavar='n', type=int, nargs='+', default=[1024],
                     help='number of nodes for final hidden layer')
 
-parser.add_argument('-e', nargs='?', const=100, type=int, default=100,
+parser.add_argument('-e', '--epochs', nargs='?', const=100, type=int, default=100,
                     help='number of epochs to train for'
                     )
 
-parser.add_argument('-t', action='store_true',
+parser.add_argument('-t', 'use_transfer_learning  ', action='store_true',
                     help='weather to randomly initialize or use transfer learning')
 
 parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
