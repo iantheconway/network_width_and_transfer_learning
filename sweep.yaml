@@ -1,6 +1,6 @@
 program: basic_cifar_100.py
-project: network_width_and_transfer_learning
-entity: iantheconway
+project: 'network_width_and_transfer_learning'
+entity: 'iantheconway'
 method: grid
 metric:
   goal: minimize
