@@ -1,7 +1,7 @@
 program: basic_cifar_100.py
 project: 'network_width_and_transfer_learning'
 entity: 'iantheconway'
-name: blah
+name: test_different_widths
 method: grid
 metric:
   goal: minimize

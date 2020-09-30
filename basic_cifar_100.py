@@ -21,7 +21,7 @@ parser.add_argument('-e', '--epochs', nargs='?', const=100, type=int, default=10
                     help='number of epochs to train for'
                     )
 
-parser.add_argument('-t', 'use_transfer_learning  ', action='store_true',
+parser.add_argument('-t', '--use_transfer_learning  ', action='store_true',
                     help='weather to randomly initialize or use transfer learning')
 
 parser.add_argument('-b', metavar='b', type=bool, nargs='+', default=False,
