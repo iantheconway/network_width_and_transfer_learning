@@ -239,7 +239,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_transfer_learning(
-        transfer=args.t,
+        transfer=True,
         batch_norm=args.b,
         dropout=args.d,
         epochs=args.e
