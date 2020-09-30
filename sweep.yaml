@@ -10,6 +10,6 @@ parameters:
   penultimate_layer_dim:
     values: [32, 64, 128, 256, 512, 1024, 2048, 4096]
   use_transfer_learning:
-    values: [True, False]
+    values: [1, 0]
   epochs:
     value: 1
