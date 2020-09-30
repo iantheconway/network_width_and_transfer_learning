@@ -1,0 +1,12 @@
+program: basic_cifar_100.py
+method: grid
+metric:
+  goal: minimize
+  name: loss
+parameters:
+  penultimate_layer_dim:
+    values: [32, 64, 128, 256, 512, 1024, 2048, 4096]
+  use_transfer_learning:
+    values: [True, False]
+  epochs:
+    value: 1
