@@ -242,6 +242,6 @@ if __name__ == "__main__":
         transfer=True,
         batch_norm=False,
         dropout=False,
-        penultimate_layer_dim=args.penultimate_layer_dim,
+        penultimate_layer_dim=args.penultimate_layer_dim[0],
         epochs=1
     )
