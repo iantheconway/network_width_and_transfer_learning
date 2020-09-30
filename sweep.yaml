@@ -1,7 +1,7 @@
 program: basic_cifar_100.py
 project: 'network_width_and_transfer_learning'
 entity: 'iantheconway'
-name: test_different_widths
+name: use_transfer_learning
 method: grid
 metric:
   goal: minimize
@@ -10,6 +10,6 @@ parameters:
   penultimate_layer_dim:
     values: [32, 64, 128, 256, 512, 1024, 2048, 4096]
   use_transfer_learning:
-    values: [True, False]
+    value: 1
   epochs:
     value: 1
