@@ -1,13 +1,15 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import argparse
+
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.keras import datasets, layers, models
-from class_names import cifar_100_coarse_classes
 import wandb
 from wandb.keras import WandbCallback
+
+from class_names import cifar_100_coarse_classes
 
 
 parser = argparse.ArgumentParser(description='Compare network architecture for transfer learning')
@@ -57,6 +59,7 @@ def run_transfer_learning(transfer=True,
 
     wandb.init(project="network_width_and_transfer_learning",
                sync_tensorboard=True,
+               entity="iantheconway",
                config=config
                )
 
