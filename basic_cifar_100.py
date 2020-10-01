@@ -243,5 +243,5 @@ if __name__ == "__main__":
         batch_norm=False,
         dropout=False,
         penultimate_layer_dim=args.penultimate_layer_dim[0],
-        epochs=100
+        epochs=25
     )
