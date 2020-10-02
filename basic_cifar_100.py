@@ -38,7 +38,9 @@ def run_transfer_learning(transfer=True,
                           learning_rate=0.0129,
                           learning_rate_fine=0.001,
                           epochs=100,
-                          dropout=False):
+                          dropout=False,
+                          init=True
+                          ):
     """trains a model on a subset of the cifar 100 classes,
     freezes parameters and then does transfer learning on the remaining classes"""
 
@@ -49,19 +51,20 @@ def run_transfer_learning(transfer=True,
         horizontal_flip=True,
         fill_mode='nearest')
 
-    config = {'transfer': transfer,
-              'penultimate_layer_dim': penultimate_layer_dim,
-              'batch_norm': batch_norm,
-              'batch_size': batch_size,
-              'learning_rate': learning_rate,
-              'learning_rate_fine': learning_rate_fine,
-              'dropout': dropout}
+    if init:
 
-    wandb.init(project="network_width_and_transfer_learning",
-               sync_tensorboard=True,
-               entity="iantheconway",
-               config=config
-               )
+        config = {'transfer': transfer,
+                  'penultimate_layer_dim': penultimate_layer_dim,
+                  'batch_norm': batch_norm,
+                  'batch_size': batch_size,
+                  'learning_rate': learning_rate,
+                  'learning_rate_fine': learning_rate_fine,
+                  'dropout': dropout}
+        wandb.init(project="network_width_and_transfer_learning",
+                   sync_tensorboard=True,
+                   entity="iantheconway",
+                   config=config
+                   )
 
     # n_classes must be <= 20. In 1909.11572 they use only 3 coarse classes
     n_classes = 3
