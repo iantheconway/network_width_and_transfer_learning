@@ -242,7 +242,6 @@ def run_transfer_learning(transfer=True,
     print(test_acc)
     wandb.log({"novel_task_test_accuracy": test_acc})
     wandb.log({"training_accuracy_plot": plt})
-    plt.show()
 
 
 if __name__ == "__main__":
