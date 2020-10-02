@@ -6,6 +6,6 @@ Do wider networks really learn better features for transfer learning, or is it j
 
 | Notebook     |      Description      |     |
 |:----------|:-------------|------:|
-| [Run Sweep](https://github.com/iantheconway/network_width_and_transfer_learning/sweep.ipynb)  | Use Weights and Biases to run a sweep of different network widths|[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/iantheconway/network_width_and_transfer_learning/sweep.ipynb) |
+| [Run Sweep](https://github.com/iantheconway/network_width_and_transfer_learning/sweep.ipynb)  | Use Weights and Biases to run a sweep of different network widths|[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/iantheconway/network_width_and_transfer_learning/blob/master/sweep.ipynb) |
 
 
