@@ -1,8 +1,10 @@
 # network_width_and_transfer_learning
 
-Experiments on the relationship between hidden layer width and transfer learning inspired by 1909.11572
+Experiments on the relationship between hidden layer width and transfer learning inspired by https://arxiv.org/pdf/1909.11572.pdf
 
 Do wider networks really learn better features for transfer learning, or is it just that narrow networks contain information bottlenecks?
+
+By comparing the effect of network size on the fine tuning of a network for a novel task using transfer learning class to the effect of network size on a ranomly initialized network which is then fine tuned on the novel task, we show that information bottle necks could explain why wider networks outperform shallow ones on fine tuning tasks, even if better features are not learned.
 
 | Notebook     |      Description      |     |
 |:----------|:-------------|------:|
